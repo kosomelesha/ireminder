@@ -1,4 +1,4 @@
-# Tab Video Reminder
+# Oom ya maaras Reminder
 
 A simple Chrome extension that shows a reminder video only on the active tab for saved links.
 
