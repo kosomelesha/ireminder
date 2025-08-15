@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "oom ya maaras",
+  "version": "1.0",
+  "description": "Show a video reminder only in the current active tab on selected sites.",
+  "permissions": ["storage", "tabs", "scripting", "alarms"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["iron.mp4"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
+
