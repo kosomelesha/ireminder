@@ -1,15 +1,34 @@
 {
   "manifest_version": 3,
-  "name": "oom ya maaras",
+  "name": "Video Reminder",
   "version": "1.0",
-  "description": "Show a video reminder only in the current active tab on selected sites.",
+  "description": "A video reminder extension that helps you take breaks by showing video reminders on your favorite websites.",
   "permissions": ["storage", "tabs", "scripting", "alarms"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_title": "Video Reminder - Take breaks",
+    "default_icon": {
+      "16": "image (1).png",
+      "32": "image (1).png",
+      "48": "image (1).png",
+      "64": "image (1).png",
+      "96": "image (1).png",
+      "128": "image (1).png",
+      "256": "image (1).png"
+    }
+  },
+  "icons": {
+    "16": "image (1).png",
+    "32": "image (1).png",
+    "48": "image (1).png",
+    "64": "image (1).png",
+    "96": "image (1).png",
+    "128": "image (1).png",
+    "256": "image (1).png"
   },
   "web_accessible_resources": [
     {

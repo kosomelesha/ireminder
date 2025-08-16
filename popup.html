@@ -1,39 +1,275 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <meta charset="utf-8">
+    <title>Video Reminder — Sites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <head>
-        <meta charset="utf-8">
-        <title>Video Reminder — Sites</title>
-        <style>
+        html, body {
+            width: 320px;
+            height: 280px;
+            overflow: hidden;
+            background: transparent !important;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            position: relative;
+            background: transparent !important;
+        }
+
+        /* Advanced rounded container with glass effect */
+        .popup-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(255, 154, 158, 0.3);
+        }
+
+        /* Glass overlay effect */
+        .popup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1;
+        }
+
+        /* Inner glow effect */
+        .popup-container::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+            border-radius: 18px;
+            z-index: 2;
+        }
+
+        .url-section {
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .url-section h3 {
+            margin-bottom: 8px;
+            font-size: 20px;
+            color: #d63384;
+            font-weight: 600;
+        }
+
+        .url-section small {
+            display: block;
+            margin-bottom: 12px;
+            color: #666;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 14px;
+            font-family: inherit;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.25);
+            color: #333;
+            resize: vertical;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            flex: 1;
+            min-height: 100px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px !important;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: rgba(233, 30, 99, 0.6);
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(1.01);
+        }
+
+        textarea::placeholder {
+            color: rgba(102, 102, 102, 0.8);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-shrink: 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.25);
+            color: #333;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .save-btn:hover {
+            border-color: rgba(76, 175, 80, 0.6);
+            color: #4CAF50;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.2);
+        }
+
+        .clear-btn:hover {
+            border-color: rgba(244, 67, 54, 0.6);
+            color: #f44336;
+            box-shadow: 0 8px 20px rgba(244, 67, 54, 0.2);
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .status.success {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4CAF50;
+            border-color: rgba(76, 175, 80, 0.3);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.1);
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.15);
+            color: #f44336;
+            border-color: rgba(244, 67, 54, 0.3);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+            flex-shrink: 0;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(233, 30, 99, 0.2);
+            border-top: 3px solid #e91e63;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Force rounded corners on all browsers */
+        @supports (-webkit-appearance: none) {
             body {
-                font-family: Arial, sans-serif;
-                padding: 12px;
-                width: 280px;
+                -webkit-mask-image: radial-gradient(circle at 0 0, transparent 0, transparent 20px, black 20px);
+                mask-image: radial-gradient(circle at 0 0, transparent 0, transparent 20px, black 20px);
             }
+        }
+    </style>
+</head>
 
-            textarea {
-                width: 100%;
-                height: 120px;
-                box-sizing: border-box;
-            }
+<body>
+    <div class="popup-container">
+        <div class="url-section">
+            <h3>Allowed Websites</h3>
+            <small>Add websites where you want reminders (one per line)</small>
+            <textarea id="urls" placeholder="example.com&#10;youtube.com&#10;facebook.com"></textarea>
+            
+            <div class="button-group">
+                <button id="save" class="save-btn">Save</button>
+                <button id="clear" class="clear-btn">Clear</button>
+            </div>
+        </div>
+    </div>
 
-            button {
-                margin-top: 8px;
-            }
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Saving your settings...</p>
+    </div>
 
-            small {
-                color: #555;
-            }
-        </style>
-    </head>
+    <div id="status" class="status"></div>
 
-    <body>
-        <h3>Allowed URLs</h3>
-        <small>One per line (e.g., <em>example.com/path</em>)</small><br><br>
-        <textarea id="urls"></textarea>
-        <button id="save">Save</button>
-        <div id="status" style="margin-top:6px;color:green;"></div>
-        <script src="popup.js"></script>
-    </body>
-
+    <script src="popup.js"></script>
+</body>
 </html>
