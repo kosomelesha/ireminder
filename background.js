@@ -1,10 +1,19 @@
 const ALARM_NAME = "videoReminder";
-const PERIOD_MINUTES = 2; // in mins.
 
 function ensureAlarm() {
-  chrome.alarms.get(ALARM_NAME, (alarm) => {
-    if (!alarm)
-      chrome.alarms.create(ALARM_NAME, { periodInMinutes: PERIOD_MINUTES });
+  chrome.storage.local.get({ timerMinutes: 2 }, (data) => {
+    const periodMinutes = data.timerMinutes || 2;
+    chrome.alarms.get(ALARM_NAME, (alarm) => {
+      if (!alarm) {
+        chrome.alarms.create(ALARM_NAME, { periodInMinutes: periodMinutes });
+      }
+    });
+  });
+}
+
+function updateAlarm(newPeriodMinutes) {
+  chrome.alarms.clear(ALARM_NAME, () => {
+    chrome.alarms.create(ALARM_NAME, { periodInMinutes: newPeriodMinutes });
   });
 }
 
@@ -35,4 +44,11 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       });
     });
   });
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "updateTimer" && message.timerMinutes) {
+    updateAlarm(message.timerMinutes);
+    sendResponse({ success: true });
+  }
 });
